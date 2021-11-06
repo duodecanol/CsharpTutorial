@@ -7,9 +7,13 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="88,77,0,0" VerticalAlignment="Top" Width="213"
-        Click="StartButton_Click" Name="StartButton" Height="35"/>
-        <TextBox HorizontalAlignment="Left" Height="137" Margin="88,140,0,0" TextWrapping="Wrap"
-         Text="&lt;Enter a URL&gt;" VerticalAlignment="Top" Width="310" Name="ResultsTextBox"/>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="88,77,0,0" VerticalAlignment="Top" Width="213" Height="35"
+                Click="StartButton_Click" Name="StartButton" />
+        
+        <TextBox HorizontalAlignment="Left" Height="22" Margin="88,138,0,0" TextWrapping="Wrap"
+                Text="&lt;Enter a URL&gt;" VerticalAlignment="Top" Width="310" Name="InputTextBox"/>
+        
+        <TextBox HorizontalAlignment="Left" Height="138" Margin="88,186,0,0" TextWrapping="Wrap"
+                Text="&lt;The Result will be displayed here&gt;" VerticalAlignment="Top" Width="310" Name="ResultsTextBox"/>
     </Grid>
 </Window>
