@@ -3,16 +3,54 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace AsyncBreakfast
-{
+{ // https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/#dont-block-await-instead
     class Program
     {
         static async Task Main(string[] args)
         {
-            //ExecuteBadPractice();
-            await ExecuteBetterPractice();
+            //ExecuteBadPractice(); // Time elapsed: 00:00:17:606
+            //await ExecuteBetterPractice(); // Time elapsed: 00:00:17:606
+            await ExecuteConcurrencyPractice(); // Time elapsed: 00:00:07:557 !!
+        }
+        private static async Task ExecuteConcurrencyPractice()
+        {
+            Console.WriteLine("Start preparing delicious breakfast");
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            Coffee cup = PourCoffee();
+            Console.WriteLine("coffee is ready"); Console.WriteLine();
+
+            Task<Egg> eggsTask = FryEggsAsync(2);
+            Task<Bacon> baconTask = FryBaconAsync(3);
+            Task<Toast> toastTask =  ToastBreadAsync(2);
+
+            Toast toast = await toastTask;
+            ApplyButter(toast);
+            ApplyJam(toast);
+            Console.WriteLine("toast is ready"); Console.WriteLine();
+
+            Juice oj = PourOrangeJuice();
+            Console.WriteLine("oj is ready"); Console.WriteLine();
+
+            Egg eggs = await eggsTask;
+            Console.WriteLine("eggs are ready"); Console.WriteLine();
+
+            Bacon bacon = await baconTask;
+            Console.WriteLine("bacon is ready"); Console.WriteLine();
+
+
+            Console.WriteLine("Breakfast is ready!"); Console.WriteLine();
+
+            stopwatch.Stop();
+            TimeSpan ts = stopwatch.Elapsed;
+            Console.WriteLine($"Time elapsed: {ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}:{ts.Milliseconds:00}");
         }
         private static async Task ExecuteBetterPractice()
         {
+            //The total elapsed time is roughly the same as the initial synchronous version.
+            //The code has yet to take advantage of some of the key features of asynchronous programming.
+
             Console.WriteLine("Start preparing delicious breakfast");
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
