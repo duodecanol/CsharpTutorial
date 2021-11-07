@@ -11,7 +11,7 @@
                 Click="StartButton_Click" Name="StartButton" />
         
         <TextBox HorizontalAlignment="Left" Height="22" Margin="88,138,0,0" TextWrapping="Wrap"
-                Text="&lt;Enter a URL&gt;" VerticalAlignment="Top" Width="310" Name="InputTextBox"/>
+                Text="https://www.google.com/" VerticalAlignment="Top" Width="310" Name="InputTextBox"/>
         
         <TextBox HorizontalAlignment="Left" Height="138" Margin="88,186,0,0" TextWrapping="Wrap"
                 Text="&lt;The Result will be displayed here&gt;" VerticalAlignment="Top" Width="310" Name="ResultsTextBox"/>

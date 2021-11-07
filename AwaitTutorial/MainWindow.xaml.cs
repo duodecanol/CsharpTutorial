@@ -51,8 +51,11 @@ namespace AwaitTutorial
                 // "length" is, but due to when '+=' fetches the value of ResultsTextBox, you
                 // would not see the global side effect of ExampleMethodAsync setting the text.
                 ResultsTextBox.Text += String.Format("Lengh: {0:N0}\n", length);
-                // 위에서 말한 것은 async 안의 텍스트박스 추가 동작이 씹힌다는 것.
-                string msg = await ShowTodaysInfoAsync();
+
+                // 위에서 말한 것은 async 안의 텍스트박스 추가 동작이 씹힌다는 것.  이는 메인 윈도우의 스레드에 분기된 async함수의 스레드가 간섭하지 못하는 이유이다.
+
+                Task<string> returnedMessage = ShowTodaysInfoAsync(); // 위에서 한줄로 나타낸 코드는 이렇게 풀어쓸 수 있다.
+                string msg = await returnedMessage;
                 ResultsTextBox.Text += msg + Environment.NewLine;
                 //ResultsTextBox.Text += await ShowTodaysInfoAsync() + Environment.NewLine;
             }
@@ -78,6 +81,7 @@ namespace AwaitTutorial
         public async Task<string> ShowTodaysInfoAsync()
         {
             ResultsTextBox.Text += "\nWe are now calculating your today's leisure time.\n";
+            await Task.Delay(1000); // 강제 딜레이
             string message =
                 $"Today is {DateTime.Today:D}\n" +
                 "Today's hours of leisure: " +
