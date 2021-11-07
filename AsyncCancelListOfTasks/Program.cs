@@ -11,28 +11,7 @@ namespace AsyncCancelListOfTasks
 {
     class Program
     {
-        static async Task Main(string[] args)
-        {
-            Console.WriteLine("Application started.");
-            Console.WriteLine("Press the ENTER key to cancel ....." + Environment.NewLine);
-
-            Task cancelTask = Task.Run( ()=> { // Task instance named cancelTask, which will read console key strokes.
-                while (Console.ReadKey().Key != ConsoleKey.Enter)
-                {   // If the Enter key is pressed, a call to CancellationTokenSource.Cancel() is made. This will signal cancellation. 
-                    Console.WriteLine("Press the ENTER key to cancel...");
-                }
-                Console.WriteLine(Environment.NewLine + "ENTER key pressed: cancelling downloads" + Environment.NewLine);
-                s_cts.Cancel();
-            });
-
-            Task sumPageSizesTask = SumPageSizesTask();
-
-            await Task.WhenAny(new[] { cancelTask, sumPageSizesTask });
-
-            Console.WriteLine("Application ending.");
-        }
-
-        static readonly CancellationTokenSource s_cts = new CancellationTokenSource();
+        static readonly CancellationTokenSource s_cts = new CancellationTokenSource(); // async Request 취소용 토큰
 
         static readonly HttpClient s_client = new HttpClient
         {
@@ -60,26 +39,51 @@ namespace AsyncCancelListOfTasks
                 "https://docs.microsoft.com/windows",
                 "https://docs.microsoft.com/xamarin"
         };
+        /// <summary>
+        /// The entry point of this program.
+        /// </summary>
+        /// <param name="args"></param>        
+        static async Task Main(string[] args)
+        {
+            Console.WriteLine("Application started.");
+            Console.WriteLine("Press the ENTER key to cancel ....." + Environment.NewLine);
+
+            Task cancelTask = Task.Run(() => { // Task instance named cancelTask, which will read console key strokes.
+                while (Console.ReadKey().Key != ConsoleKey.Enter)
+                {   // If the Enter key is pressed, a call to CancellationTokenSource.Cancel() is made. This will signal cancellation. 
+                    Console.WriteLine("Press the ENTER key to cancel...");
+                }
+                Console.WriteLine(Environment.NewLine + "ENTER key pressed: cancelling downloads" + Environment.NewLine); // ENTER 키가 눌리면 작업을 취소한다.
+                s_cts.Cancel();
+            });
+
+            Task sumPageSizesTask = SumPageSizesTask(); // 위 작업을 띄워놓고 한편으로는 페이지 크기 출력 작업을 시작한다.
+
+            await Task.WhenAny(new[] { cancelTask, sumPageSizesTask }); // 둘 중 한 작업이라도 종료되면 애플리케이션이 종료되는 것.
+
+            Console.WriteLine("Application ending.");
+        }
+
         static async Task SumPageSizesTask()
         {
-            var stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew(); // 작업시간 측정을 위한 시계
 
             int total = 0;
             foreach (string url in s_urlList)
             {
-                int contentLength = await ProcessUrlAsync(url, s_client, s_cts.Token);
-                total += contentLength;
+                int contentLength = await ProcessUrlAsync(url, s_client, s_cts.Token); // 클래스의 URL 리스트에서 하나씩 페이지 사이즈 계산 프로세스를 돌린다.
+                total += contentLength; // 계산된 일 페이지 값은 총합에 sum한다.
             }
 
-            stopwatch.Stop();
+            stopwatch.Stop(); // stopwatch 종료
 
-            Console.WriteLine(Environment.NewLine + $"Total bytes returned: {total:#,#}");
+            Console.WriteLine(Environment.NewLine + $"Total bytes returned: {total:#,#}");  // 최종 메시지를 출력한다.
             Console.WriteLine($"Elapsed Time:                  {stopwatch.Elapsed}" + Environment.NewLine);
         }
         static async Task<int> ProcessUrlAsync(string url, HttpClient client, CancellationToken token)
         {
-            HttpResponseMessage response = await client.GetAsync(url, token);
-            byte[] content = await response.Content.ReadAsByteArrayAsync(token);
+            HttpResponseMessage response = await client.GetAsync(url, token); // URI와 취소용 토큰을 집어넣는다.
+            byte[] content = await response.Content.ReadAsByteArrayAsync(); // No token required current in current version?
             Console.WriteLine($"{url,-60}  {content.Length,10:#,#}");
             return content.Length;
         }
