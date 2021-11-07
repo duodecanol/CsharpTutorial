@@ -45,6 +45,32 @@ namespace AsyncCancelListOfTasks
         /// <param name="args"></param>        
         static async Task Main(string[] args)
         {
+            //await ManualCancelAsync();
+            await ScheduledTaskCancellationAsync();
+        }
+
+        static async Task ScheduledTaskCancellationAsync()
+        {
+            Console.WriteLine("Application started.");
+            try
+            {
+                s_cts.CancelAfter(3500); // 3.5초 뒤에 작업이 취소되도록 토큰을 설정
+                
+                await SumPageSizesAsync();
+            }
+            catch (TaskCanceledException)
+            {
+                Console.WriteLine("\nTasks cancelled: timed out.\n");
+            }
+            finally
+            {
+                s_cts.Dispose();
+            }
+            Console.WriteLine("Application ending.");
+        }
+
+        static async Task ManualCancelAsync()
+        {
             Console.WriteLine("Application started.");
             Console.WriteLine("Press the ENTER key to cancel ....." + Environment.NewLine);
 
@@ -57,14 +83,14 @@ namespace AsyncCancelListOfTasks
                 s_cts.Cancel();
             });
 
-            Task sumPageSizesTask = SumPageSizesTask(); // 위 작업을 띄워놓고 한편으로는 페이지 크기 출력 작업을 시작한다.
+            Task sumPageSizesTask = SumPageSizesAsync(); // 위 작업을 띄워놓고 한편으로는 페이지 크기 출력 작업을 시작한다.
 
             await Task.WhenAny(new[] { cancelTask, sumPageSizesTask }); // 둘 중 한 작업이라도 종료되면 애플리케이션이 종료되는 것.
 
             Console.WriteLine("Application ending.");
         }
 
-        static async Task SumPageSizesTask()
+        static async Task SumPageSizesAsync()
         {
             var stopwatch = Stopwatch.StartNew(); // 작업시간 측정을 위한 시계
 
