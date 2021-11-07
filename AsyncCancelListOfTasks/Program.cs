@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq; // Language Integrated Query
 
 
 // https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/cancel-an-async-task-or-a-list-of-tasks
@@ -45,8 +46,9 @@ namespace AsyncCancelListOfTasks
         /// <param name="args"></param>        
         static async Task Main(string[] args)
         {
-            //await ManualCancelAsync();
-            await ScheduledTaskCancellationAsync();
+            //await ManualCancelAsync(); // Elapsed Time:                  00:00:04.0973786
+            //await ScheduledTaskCancellationAsync();
+            await SumPageSizesParallelAsync(); // Elapsed Time:            00:00:02.4514291
         }
 
         static async Task ScheduledTaskCancellationAsync()
@@ -106,6 +108,33 @@ namespace AsyncCancelListOfTasks
             Console.WriteLine(Environment.NewLine + $"Total bytes returned: {total:#,#}");  // 최종 메시지를 출력한다.
             Console.WriteLine($"Elapsed Time:                  {stopwatch.Elapsed}" + Environment.NewLine);
         }
+        static async Task SumPageSizesParallelAsync() // Process asynchronous tasks as they complete
+        // https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/start-multiple-async-tasks-and-process-them-as-they-complete
+        {
+            var stopwatch = Stopwatch.StartNew();
+            
+            IEnumerable<Task<int>> downloadTasksQuery = 
+                from url in s_urlList
+                select ProcessUrlAsync(url, s_client); // C# LINQ : https://docs.microsoft.com/ko-kr/dotnet/csharp/language-reference/keywords/select-clause
+            
+            // Due to deferred execution with the LINQ, you call Enumerable.ToList to start each task.
+            // See more about "deferred execution" : https://docs.microsoft.com/en-us/dotnet/standard/linq/deferred-execution-example
+            List<Task<int>> downloadTasks = downloadTasksQuery.ToList();
+
+            int total = 0;
+            while (downloadTasks.Any())
+            {
+                //Awaits a call to WhenAny to identify the first task in the collection that has finished its download.
+                Task<int> finishedTask = await Task.WhenAny(downloadTasks);
+                downloadTasks.Remove(finishedTask); // Removes finished task from the collection.
+                total += await finishedTask;
+            }
+
+            stopwatch.Stop();
+
+            Console.WriteLine(Environment.NewLine + $"Total bytes returned: {total:#,#}");  // 최종 메시지를 출력한다.
+            Console.WriteLine($"Elapsed Time:                  {stopwatch.Elapsed}" + Environment.NewLine);
+        }
         static async Task<int> ProcessUrlAsync(string url, HttpClient client, CancellationToken token)
         {
             HttpResponseMessage response = await client.GetAsync(url, token); // URI와 취소용 토큰을 집어넣는다.
@@ -113,5 +142,12 @@ namespace AsyncCancelListOfTasks
             Console.WriteLine($"{url,-60}  {content.Length,10:#,#}");
             return content.Length;
         }
+        static async Task<int> ProcessUrlAsync(string url, HttpClient client)
+        {
+            byte[] content = await client.GetByteArrayAsync(url);
+            Console.WriteLine($"{url,-60}  {content.Length,10:#,#}");
+            return content.Length;
+        }
+
     }
 }
