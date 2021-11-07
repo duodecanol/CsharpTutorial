@@ -60,5 +60,28 @@ namespace AsyncCancelListOfTasks
                 "https://docs.microsoft.com/windows",
                 "https://docs.microsoft.com/xamarin"
         };
+        static async Task SumPageSizesTask()
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            int total = 0;
+            foreach (string url in s_urlList)
+            {
+                int contentLength = await ProcessUrlAsync(url, s_client, s_cts.Token);
+                total += contentLength;
+            }
+
+            stopwatch.Stop();
+
+            Console.WriteLine(Environment.NewLine + $"Total bytes returned: {total:#,#}");
+            Console.WriteLine($"Elapsed Time:                  {stopwatch.Elapsed}" + Environment.NewLine);
+        }
+        static async Task<int> ProcessUrlAsync(string url, HttpClient client, CancellationToken token)
+        {
+            HttpResponseMessage response = await client.GetAsync(url, token);
+            byte[] content = await response.Content.ReadAsByteArrayAsync(token);
+            Console.WriteLine($"{url,-60}  {content.Length,10:#,#}");
+            return content.Length;
+        }
     }
 }
