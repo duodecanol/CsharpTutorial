@@ -11,8 +11,25 @@ namespace AsyncCancelListOfTasks
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
+            Console.WriteLine("Application started.");
+            Console.WriteLine("Press the ENTER key to cancel ....." + Environment.NewLine);
+
+            Task cancelTask = Task.Run( ()=> { // Task instance named cancelTask, which will read console key strokes.
+                while (Console.ReadKey().Key != ConsoleKey.Enter)
+                {   // If the Enter key is pressed, a call to CancellationTokenSource.Cancel() is made. This will signal cancellation. 
+                    Console.WriteLine("Press the ENTER key to cancel...");
+                }
+                Console.WriteLine(Environment.NewLine + "ENTER key pressed: cancelling downloads" + Environment.NewLine);
+                s_cts.Cancel();
+            });
+
+            Task sumPageSizesTask = SumPageSizesTask();
+
+            await Task.WhenAny(new[] { cancelTask, sumPageSizesTask });
+
+            Console.WriteLine("Application ending.");
         }
 
         static readonly CancellationTokenSource s_cts = new CancellationTokenSource();
