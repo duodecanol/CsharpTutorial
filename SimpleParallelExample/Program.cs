@@ -15,6 +15,9 @@ namespace SimpleParallelExample
             DirectorySizeExample.MainFunc( myargs );
 
             //////////////////////////////////////////////////////////////
+            ///
+
+            MultiplyMatrices.MainSub();
         }
     }
 
