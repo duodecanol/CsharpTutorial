@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncBreakfast", "AsyncBrea
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncCancelListOfTasks", "AsyncCancelListOfTasks\AsyncCancelListOfTasks.csproj", "{BCA0588F-E989-408B-8959-E0503100DC12}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleParallelExample", "SimpleParallelExample\SimpleParallelExample.csproj", "{215EAE8A-C5A4-4FF7-95C7-144974AA55E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{BCA0588F-E989-408B-8959-E0503100DC12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCA0588F-E989-408B-8959-E0503100DC12}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCA0588F-E989-408B-8959-E0503100DC12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{215EAE8A-C5A4-4FF7-95C7-144974AA55E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{215EAE8A-C5A4-4FF7-95C7-144974AA55E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{215EAE8A-C5A4-4FF7-95C7-144974AA55E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{215EAE8A-C5A4-4FF7-95C7-144974AA55E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
