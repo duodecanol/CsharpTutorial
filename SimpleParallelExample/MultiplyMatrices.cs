@@ -110,6 +110,7 @@ namespace SimpleParallelExample
             Console.ReadKey();
         }
         #endregion
+
         #region Helper_Methods
         static double[,] InitializeMatrix(int rows, int cols)
         {

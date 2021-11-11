@@ -9,15 +9,16 @@ namespace SimpleParallelExample
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            //Console.WriteLine("Hello World!");
 
-            string[] myargs = { @"c:\windows\", @"C:\Users\" };
-            DirectorySizeExample.MainFunc( myargs );
+            //string[] myargs = { @"c:\windows\", @"C:\Users\" };
+            //DirectorySizeExample.MainFunc( myargs );
 
             //////////////////////////////////////////////////////////////
-            ///
 
-            MultiplyMatrices.MainSub();
+            //MultiplyMatrices.MainSub();
+
+            SimpleParallelForEachLoop.MainEntry();
         }
     }
 
