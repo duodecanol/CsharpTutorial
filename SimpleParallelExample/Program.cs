@@ -18,7 +18,9 @@ namespace SimpleParallelExample
 
             //MultiplyMatrices.MainSub();
 
-            SimpleParallelForEachLoop.MainEntry();
+            //SimpleParallelForEachLoop.MainEntry();
+
+            ParallelForEachWithThreadLocalVar.MainEntry();
         }
     }
 
