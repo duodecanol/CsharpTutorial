@@ -22,7 +22,9 @@ namespace SimpleParallelExample
 
             //ParallelForEachWithThreadLocalVar.MainEntry();
 
-            CancelParallelLoops.MainEntry();
+            //CancelParallelLoops.MainEntry();
+
+            ParallelExceptionHandleDemo.MainEntry();
         }
     }
 
