@@ -24,7 +24,9 @@ namespace SimpleParallelExample
 
             //CancelParallelLoops.MainEntry();
 
-            ParallelExceptionHandleDemo.MainEntry();
+            //ParallelExceptionHandleDemo.MainEntry();
+
+            ParallelIterateFileDiretories.MainEntry();
         }
     }
 
