@@ -12,9 +12,11 @@ namespace SimpleParallelExample
     {
         public static void MainEntry()
         {
+            string lookinDir = @"C:\Program Files\memoQ";
+
             try
             {
-                TraverseTreeParallelForEach(@"C:\Program Files", (f) =>
+                TraverseTreeParallelForEach(lookinDir, (f) =>
                 {
                     try // Exceptions are no-ops.
                     {
@@ -29,7 +31,7 @@ namespace SimpleParallelExample
             }
             catch (ArgumentException)
             {
-                Console.WriteLine(@"The directory 'C:\Program Files' does not exist.");
+                Console.WriteLine($"The directory '{lookinDir}' does not exist.");
             }
 
             Console.ReadKey(); // Keep the console window open.
