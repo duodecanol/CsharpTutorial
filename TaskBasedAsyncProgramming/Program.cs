@@ -8,9 +8,11 @@ namespace TaskBasedAsyncProgramming
         {
             //aTaskBasedAsyncProgramming_Example.BasicTaskThreadExample();
             //aTaskBasedAsyncProgramming_Example.TaskFactoryVoidExample();
-            aTaskBasedAsyncProgramming_Example.TaskFactoryVoidExampleProblem();
+            //aTaskBasedAsyncProgramming_Example.TaskFactoryVoidExampleProblem();
             //aTaskBasedAsyncProgramming_Example.TaskFactoryTResultExample();
-            aTaskBasedAsyncProgramming_Example.TaskFactoryVoidExampleProblemSolved();
+            //aTaskBasedAsyncProgramming_Example.TaskFactoryVoidExampleProblemSolved();
+            aTaskBasedAsyncProgramming_Example.ThreadCultureExample();
+
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -123,10 +124,59 @@ namespace TaskBasedAsyncProgramming
                 sum += value;
             return sum;
         }
+
+        #region Task, threads, and culture
+        public static void ThreadCultureExample()
+        {
+            decimal[] values = { 163025412.32m, 18905365.59m };
+            string formatString = "C2"; // with currency symbol, 2 digits after the decimal point
+            Func<String> formatDelegate = () =>
+            {
+                string output = String.Format("Formatting using the {0} culture on thread {1}.\n",
+                    CultureInfo.CurrentCulture.Name,
+                    Thread.CurrentThread.ManagedThreadId);
+
+                foreach (var value in values)
+                    output += String.Format("{0}    ", value.ToString(formatString)); // "{value:C2}"
+
+                output += Environment.NewLine;
+                return output;
+            };
+
+            Console.WriteLine("The example is running on thread {0}", Thread.CurrentThread.ManagedThreadId);
+            // Make the current culture different from the system culture.
+            Console.WriteLine("The current culture is {0}", CultureInfo.CurrentCulture.Name);
+            if (CultureInfo.CurrentCulture.Name == "ko-KR")
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
+                //Thread.CurrentThread.CurrentCulture = new CultureInfo("ja-JP");
+            else
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
+
+            Console.WriteLine("Changed the current culture is {0}\n", CultureInfo.CurrentCulture.Name);
+
+            // Execute the delegate synchronously.
+            Console.WriteLine("Executing the delegate synchronously: ");
+            Console.WriteLine(formatDelegate());
+
+            // Call an async delegate to format the values using one format string.
+            Console.WriteLine("Executing a task asynchronously: ");
+            var t1 = Task.Run(formatDelegate);
+            Console.WriteLine(t1.Result);
+
+            Console.WriteLine("Executing a task synchronously: ");
+            var t2 = new Task<String>(formatDelegate);
+            t2.RunSynchronously();
+            Console.WriteLine(t2.Result);
+        }
+        // In versions of .NET Framework prior to .NET Framework 4.6,
+        // a task's culture is determined by the culture of the thread on which it runs,
+        // not the culture of the calling thread. For asynchronous tasks,
+        // this means the culture used by the task could be different to the calling thread's culture.
+        #endregion
     }
 
     #endregion
-        class CustomData
+    class CustomData
         {
             public long CreationTime;
             public int Name;
